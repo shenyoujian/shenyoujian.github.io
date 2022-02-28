@@ -1,0 +1,181 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>002TS之方法重载构造器重载 | 梁朝伟</title><meta name="keywords" content="TS"><meta name="author" content="梁朝伟"><meta name="copyright" content="梁朝伟"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="方法和函数区别，理解方法签名方法：方法是一种特定场景下的函数，由对象变量【实例变量】直接调用的函数都是方法。 比如：  函数内部用 this 定义的函数是方法；   TS  类中定义的函数是方法【 TS  类中定义的方法就是编译后  JS 底层 prototype 的一个函数】；   接口内部定义的函数是方法【注意：不是接口函数】；  type  内部定义的函数是方法【注意：不是 type 函数】">
+<meta property="og:type" content="article">
+<meta property="og:title" content="002TS之方法重载构造器重载">
+<meta property="og:url" content="http://example.com/2021/12/19/002TS%E4%B9%8B%E6%96%B9%E6%B3%95%E9%87%8D%E8%BD%BD%E6%9E%84%E9%80%A0%E5%99%A8%E9%87%8D%E8%BD%BD/index.html">
+<meta property="og:site_name" content="梁朝伟">
+<meta property="og:description" content="方法和函数区别，理解方法签名方法：方法是一种特定场景下的函数，由对象变量【实例变量】直接调用的函数都是方法。 比如：  函数内部用 this 定义的函数是方法；   TS  类中定义的函数是方法【 TS  类中定义的方法就是编译后  JS 底层 prototype 的一个函数】；   接口内部定义的函数是方法【注意：不是接口函数】；  type  内部定义的函数是方法【注意：不是 type 函数】">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2021-12-19T15:34:00.000Z">
+<meta property="article:modified_time" content="2021-12-19T15:52:25.184Z">
+<meta property="article:author" content="梁朝伟">
+<meta property="article:tag" content="TS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2021/12/19/002TS%E4%B9%8B%E6%96%B9%E6%B3%95%E9%87%8D%E8%BD%BD%E6%9E%84%E9%80%A0%E5%99%A8%E9%87%8D%E8%BD%BD/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '002TS之方法重载构造器重载',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-12-19 23:52:25'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/logo.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a></div></div></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">梁朝伟</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">002TS之方法重载构造器重载</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-12-19T15:34:00.000Z" title="发表于 2021-12-19 23:34:00">2021-12-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-12-19T15:52:25.184Z" title="更新于 2021-12-19 23:52:25">2021-12-19</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="002TS之方法重载构造器重载"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h4 id="方法和函数区别，理解方法签名"><a href="#方法和函数区别，理解方法签名" class="headerlink" title="方法和函数区别，理解方法签名"></a>方法和函数区别，理解方法签名</h4><p><strong>方法：</strong>方法是一种特定场景下的函数，由对象变量【实例变量】直接调用的函数都是方法。</p>
+<p>比如：</p>
+<ol>
+<li><p>函数内部用 this 定义的函数是方法； </p>
+</li>
+<li><p>TS  类中定义的函数是方法【 TS  类中定义的方法就是编译后  JS 底层 prototype 的一个函数】； </p>
+</li>
+<li><p>接口内部定义的函数是方法【注意：不是接口函数】；</p>
+</li>
+<li><p>type  内部定义的函数是方法【注意：不是 type 函数】。</p>
+</li>
+</ol>
+<p><strong>方法签名：</strong>和函数签名一样，方法签名 = 方法名称 + 方法参数 + 方法参数类型 + 返回值类型四者合成。</p>
+<h4 id="Java-简易版-ArrayList-类-和其中的方法重载代码实现"><a href="#Java-简易版-ArrayList-类-和其中的方法重载代码实现" class="headerlink" title="Java 简易版 ArrayList 类 和其中的方法重载代码实现"></a>Java 简易版 ArrayList 类 和其中的方法重载代码实现</h4><p>ArrayList 可弥补 Set 取值不方便短板，比 Set 删除功能更方便</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 重载remove来解决set删除方法的不足</span></span><br><span class="line"><span class="comment"> * 如果是根据数字【元素索引】去删除元素，remove方法返回是一个数字</span></span><br><span class="line"><span class="comment"> * 如果是根据对象去删除元素，remobe方法返回的是一个对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ArrayList</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="title">constructor</span>(<span class="params"><span class="keyword">public</span> element: <span class="built_in">Array</span>&lt;<span class="built_in">object</span>&gt;</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.element = element;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="title">get</span>(<span class="params">index: <span class="built_in">number</span></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.element[index];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="title">show</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.element.forEach(<span class="function"><span class="params">item</span> =&gt;</span> <span class="built_in">console</span>.log(item))</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  remove(value: <span class="built_in">number</span>): <span class="built_in">number</span></span><br><span class="line">  remove(value: <span class="built_in">object</span>): <span class="built_in">object</span></span><br><span class="line">  remove(value: <span class="built_in">number</span> | <span class="built_in">object</span>): <span class="built_in">any</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.element = <span class="built_in">this</span>.element.filter(<span class="function">(<span class="params">item, index</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">typeof</span> value === <span class="string">&#x27;number&#x27;</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> index !== value;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> item !== value;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> perOne = &#123; <span class="attr">id</span>: <span class="number">1</span>, <span class="attr">age</span>: <span class="number">32</span> &#125;;</span><br><span class="line"><span class="keyword">const</span> perTwo = &#123; <span class="attr">jd</span>: <span class="number">2</span>, <span class="attr">age</span>: <span class="number">40</span> &#125;;</span><br><span class="line"><span class="keyword">const</span> perThree = &#123; <span class="attr">id</span>: <span class="number">3</span>, <span class="attr">age</span>: <span class="number">48</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> arrList = <span class="keyword">new</span> ArrayList([perOne, perTwo, perThree]);</span><br><span class="line"><span class="keyword">const</span> reValue = arrList.remove(perOne);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&quot;被删除的是:&quot;</span>, reValue);</span><br><span class="line">arrList.show();</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> set = <span class="keyword">new</span> <span class="built_in">Set</span>([perOne, perTwo, perThree]);</span><br><span class="line"><span class="keyword">const</span> deValue = set.delete(perOne);</span><br><span class="line"><span class="comment">// set.delete(0)</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&quot;被删除的是:&quot;</span>, deValue);</span><br><span class="line">set.forEach(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(item);</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">被删除的是: &#123; <span class="attr">id</span>: <span class="number">1</span>, <span class="attr">age</span>: <span class="number">32</span> &#125;</span><br><span class="line">&#123; <span class="attr">jd</span>: <span class="number">2</span>, <span class="attr">age</span>: <span class="number">40</span> &#125;</span><br><span class="line">&#123; <span class="attr">id</span>: <span class="number">3</span>, <span class="attr">age</span>: <span class="number">48</span> &#125;</span><br><span class="line">被删除的是: <span class="literal">true</span></span><br><span class="line">&#123; <span class="attr">jd</span>: <span class="number">2</span>, <span class="attr">age</span>: <span class="number">40</span> &#125;</span><br><span class="line">&#123; <span class="attr">id</span>: <span class="number">3</span>, <span class="attr">age</span>: <span class="number">48</span> &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="构造器-【构造函数】重载"><a href="#构造器-【构造函数】重载" class="headerlink" title="构造器 【构造函数】重载"></a>构造器 【构造函数】重载</h4><h5 id="（1）再次强化理解-this"><a href="#（1）再次强化理解-this" class="headerlink" title="（1）再次强化理解 this"></a>（1）<strong>再次强化理解 this</strong></h5><p>this 其实是一个对象变量，当 new 出来一个对象时，构造器会隐式返回 this  给 new 对象等号左边的对象变量，this 和等号左边的对象变量都指向当前正创建的对象。</p>
+<p>以后，哪一个对象调用 TS 类的方法，那么这个方法中的 this 都指向当前正使用的对象【 this 和当前的对象变量中都保存着当前对象的首地址】</p>
+<h5 id="（2）TS构造器有返回值吗？"><a href="#（2）TS构造器有返回值吗？" class="headerlink" title="（2）TS构造器有返回值吗？"></a>（2）<strong>TS构造器有返回值吗？</strong></h5><p>尽管TS类构造器会隐式返回 this，如果我们非要返回一个值，TS 类构造器只允许返回 this，但构造器不需要返回值也能通过编译，更没有返回值类型之说，从这个意义上，TS 构造器可以<strong>说成是没有返回值这一说</strong>的构造函数。【<strong>注意：TS 构造器和 JS 构造函数关于返回值的说法不完全相同</strong>】</p>
+<h5 id="（3）-构造器-【构造函数】重载的意义"><a href="#（3）-构造器-【构造函数】重载的意义" class="headerlink" title="（3） 构造器 【构造函数】重载的意义"></a>（3） 构造器 【构造函数】重载的意义</h5><h5 id="构造器重载和函数重载使基本相同，主要区别是：TS-类构造器重载签名和实现签名都不需要管理返回值，TS-构造器是在对象创建出来之后，但是还没有赋值给对象变量之前被执行，一般用来给对象属性赋值。"><a href="#构造器重载和函数重载使基本相同，主要区别是：TS-类构造器重载签名和实现签名都不需要管理返回值，TS-构造器是在对象创建出来之后，但是还没有赋值给对象变量之前被执行，一般用来给对象属性赋值。" class="headerlink" title="构造器重载和函数重载使基本相同，主要区别是：TS 类构造器重载签名和实现签名都不需要管理返回值，TS 构造器是在对象创建出来之后，但是还没有赋值给对象变量之前被执行，一般用来给对象属性赋值。"></a>构造器重载和函数重载使基本相同，主要区别是：TS 类构造器重载签名和实现签名都不需要管理返回值，TS 构造器是在对象创建出来之后，但是还没有赋值给对象变量之前被执行，一般用来给对象属性赋值。</h5><p>我们知道在 TS 类中只能定义一个构造器，但实际应用时，TS 类在创建对象时经常需要用到有多个构造器的场景，比如：我们计算一个正方形面积，创建正方形对象，可以给构造器传递宽和高，也可以给构造器传递一个包含了宽和高的形状参数对象，这样需要用构造器重载来解决。而面试中也多次出现过关于TS构造器重载的考察，主要考察求职者对重载+构造器的综合运用能力。</p>
+<h5 id="（4）-构造器是方法吗"><a href="#（4）-构造器是方法吗" class="headerlink" title="（4） 构造器是方法吗?"></a>（4） 构造器是方法吗?</h5><p>我们说对象调用的才是方法，但是 TS 构造器是在对象空间地址赋值给对象变量之前被调用，而不是用来被对象变量调用的，所以构造器( constructor )可以说成构造函数，但不能被看成是一个方法。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = <span class="keyword">new</span> <span class="built_in">Object</span>();  </span><br><span class="line">obj.constructor();  <span class="comment">// &#123;&#125;</span></span><br><span class="line"><span class="comment">// 执行顺序：对象创建==》构造器调用返回this==》赋值给左边的对象变量，虽然对象可以调用构造器但是构造器不能被看成是对象的一个方法</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="构造器实现编码【真实应用场景】"><a href="#构造器实现编码【真实应用场景】" class="headerlink" title="构造器实现编码【真实应用场景】"></a>构造器实现编码【真实应用场景】</h4><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 我们计算一个正方形面积，创建正方形对象，</span></span><br><span class="line"><span class="comment"> * 可以给构造器传递宽和高，也可以给构造器传递一个包含了宽和高的形状参数对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">type</span> SpareCalAreaParam = &#123;</span><br><span class="line">  width?: <span class="built_in">number</span>,</span><br><span class="line">  height?: <span class="built_in">number</span>,</span><br><span class="line">  radius?: <span class="built_in">number</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Spare</span> </span>&#123;</span><br><span class="line">  <span class="keyword">public</span> width: <span class="built_in">number</span>;</span><br><span class="line">  <span class="keyword">public</span> height: <span class="built_in">number</span>;</span><br><span class="line">  <span class="title">constructor</span>(<span class="params">width_: <span class="built_in">number</span>, height_: <span class="built_in">number</span></span>)     // 重载签名</span><br><span class="line">  <span class="title">constructor</span>(<span class="params">param: SpareCalAreaParam</span>)    // 重载签名</span><br><span class="line">  // <span class="title">constructor</span>(<span class="params">widthOrScap: <span class="built_in">number</span>|SpareCalAreaParam, height_?: <span class="built_in">number</span></span>) &#123;  </span><br><span class="line">  <span class="comment">// 可以使用any来表示联合类型，这样就不会报转换为undefined的错误，可以使用默认值或者可选参数来解决第二个重载方法的参数报错 </span></span><br><span class="line">  <span class="function"><span class="title">constructor</span>(<span class="params">widthOrScap: <span class="built_in">any</span>, height_: <span class="built_in">number</span> = <span class="number">1</span></span>)</span> &#123;  <span class="comment">// 实现签名</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> widthOrScap === <span class="string">&#x27;object&#x27;</span>) &#123;</span><br><span class="line">      <span class="built_in">this</span>.width = widthOrScap.width;</span><br><span class="line">      <span class="built_in">this</span>.height = widthOrScap.height;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.width = widthOrScap;</span><br><span class="line">      <span class="built_in">this</span>.height = height_;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="title">getArea</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.width * <span class="built_in">this</span>.height;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> spare = <span class="keyword">new</span> Spare(<span class="number">40</span>, <span class="number">4</span>);</span><br><span class="line"><span class="keyword">const</span> spare2 = <span class="keyword">new</span> Spare(&#123; <span class="attr">width</span>: <span class="number">50</span>, <span class="attr">height</span>: <span class="number">60</span> &#125;)</span><br><span class="line"><span class="comment">// const spare3 = new Spare(&#x27;1&#x27;,&#123; width: 50, height: 60 &#125;)</span></span><br><span class="line"><span class="comment">// 报错string无法赋值给number，都是通过入参去找到对应的重载签名，而不会去直接找实现签名，</span></span><br><span class="line"><span class="comment">// 所以不用害怕实现签名入参使用any类型，但你传的类型错误时，它直接报错</span></span><br><span class="line"><span class="built_in">console</span>.log(spare.getArea())</span><br><span class="line"><span class="built_in">console</span>.log(spare2.getArea())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">梁朝伟</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2021/12/19/002TS%E4%B9%8B%E6%96%B9%E6%B3%95%E9%87%8D%E8%BD%BD%E6%9E%84%E9%80%A0%E5%99%A8%E9%87%8D%E8%BD%BD/">http://example.com/2021/12/19/002TS%E4%B9%8B%E6%96%B9%E6%B3%95%E9%87%8D%E8%BD%BD%E6%9E%84%E9%80%A0%E5%99%A8%E9%87%8D%E8%BD%BD/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">梁朝伟</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/TS/">TS</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/02/27/%E8%A1%A8%E7%99%BD/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">给晴姐的一封信</div></div></a></div><div class="next-post pull-right"><a href="/2021/12/13/001TS%E4%B9%8B%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">001TS之函数重载</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/12/13/001TS%E4%B9%8B%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD/" title="001TS之函数重载"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-13</div><div class="title">001TS之函数重载</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/logo.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">梁朝伟</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E5%92%8C%E5%87%BD%E6%95%B0%E5%8C%BA%E5%88%AB%EF%BC%8C%E7%90%86%E8%A7%A3%E6%96%B9%E6%B3%95%E7%AD%BE%E5%90%8D"><span class="toc-number">1.</span> <span class="toc-text">方法和函数区别，理解方法签名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Java-%E7%AE%80%E6%98%93%E7%89%88-ArrayList-%E7%B1%BB-%E5%92%8C%E5%85%B6%E4%B8%AD%E7%9A%84%E6%96%B9%E6%B3%95%E9%87%8D%E8%BD%BD%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">Java 简易版 ArrayList 类 和其中的方法重载代码实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E5%99%A8-%E3%80%90%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E3%80%91%E9%87%8D%E8%BD%BD"><span class="toc-number">3.</span> <span class="toc-text">构造器 【构造函数】重载</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%EF%BC%881%EF%BC%89%E5%86%8D%E6%AC%A1%E5%BC%BA%E5%8C%96%E7%90%86%E8%A7%A3-this"><span class="toc-number">3.1.</span> <span class="toc-text">（1）再次强化理解 this</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%EF%BC%882%EF%BC%89TS%E6%9E%84%E9%80%A0%E5%99%A8%E6%9C%89%E8%BF%94%E5%9B%9E%E5%80%BC%E5%90%97%EF%BC%9F"><span class="toc-number">3.2.</span> <span class="toc-text">（2）TS构造器有返回值吗？</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%EF%BC%883%EF%BC%89-%E6%9E%84%E9%80%A0%E5%99%A8-%E3%80%90%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E3%80%91%E9%87%8D%E8%BD%BD%E7%9A%84%E6%84%8F%E4%B9%89"><span class="toc-number">3.3.</span> <span class="toc-text">（3） 构造器 【构造函数】重载的意义</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E5%99%A8%E9%87%8D%E8%BD%BD%E5%92%8C%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD%E4%BD%BF%E5%9F%BA%E6%9C%AC%E7%9B%B8%E5%90%8C%EF%BC%8C%E4%B8%BB%E8%A6%81%E5%8C%BA%E5%88%AB%E6%98%AF%EF%BC%9ATS-%E7%B1%BB%E6%9E%84%E9%80%A0%E5%99%A8%E9%87%8D%E8%BD%BD%E7%AD%BE%E5%90%8D%E5%92%8C%E5%AE%9E%E7%8E%B0%E7%AD%BE%E5%90%8D%E9%83%BD%E4%B8%8D%E9%9C%80%E8%A6%81%E7%AE%A1%E7%90%86%E8%BF%94%E5%9B%9E%E5%80%BC%EF%BC%8CTS-%E6%9E%84%E9%80%A0%E5%99%A8%E6%98%AF%E5%9C%A8%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E5%87%BA%E6%9D%A5%E4%B9%8B%E5%90%8E%EF%BC%8C%E4%BD%86%E6%98%AF%E8%BF%98%E6%B2%A1%E6%9C%89%E8%B5%8B%E5%80%BC%E7%BB%99%E5%AF%B9%E8%B1%A1%E5%8F%98%E9%87%8F%E4%B9%8B%E5%89%8D%E8%A2%AB%E6%89%A7%E8%A1%8C%EF%BC%8C%E4%B8%80%E8%88%AC%E7%94%A8%E6%9D%A5%E7%BB%99%E5%AF%B9%E8%B1%A1%E5%B1%9E%E6%80%A7%E8%B5%8B%E5%80%BC%E3%80%82"><span class="toc-number">3.4.</span> <span class="toc-text">构造器重载和函数重载使基本相同，主要区别是：TS 类构造器重载签名和实现签名都不需要管理返回值，TS 构造器是在对象创建出来之后，但是还没有赋值给对象变量之前被执行，一般用来给对象属性赋值。</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%EF%BC%884%EF%BC%89-%E6%9E%84%E9%80%A0%E5%99%A8%E6%98%AF%E6%96%B9%E6%B3%95%E5%90%97"><span class="toc-number">3.5.</span> <span class="toc-text">（4） 构造器是方法吗?</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E5%99%A8%E5%AE%9E%E7%8E%B0%E7%BC%96%E7%A0%81%E3%80%90%E7%9C%9F%E5%AE%9E%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E3%80%91"><span class="toc-number">4.</span> <span class="toc-text">构造器实现编码【真实应用场景】</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/02/27/%E8%A1%A8%E7%99%BD/" title="给晴姐的一封信"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="给晴姐的一封信"/></a><div class="content"><a class="title" href="/2022/02/27/%E8%A1%A8%E7%99%BD/" title="给晴姐的一封信">给晴姐的一封信</a><time datetime="2022-02-27T15:55:11.000Z" title="发表于 2022-02-27 23:55:11">2022-02-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/19/002TS%E4%B9%8B%E6%96%B9%E6%B3%95%E9%87%8D%E8%BD%BD%E6%9E%84%E9%80%A0%E5%99%A8%E9%87%8D%E8%BD%BD/" title="002TS之方法重载构造器重载"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="002TS之方法重载构造器重载"/></a><div class="content"><a class="title" href="/2021/12/19/002TS%E4%B9%8B%E6%96%B9%E6%B3%95%E9%87%8D%E8%BD%BD%E6%9E%84%E9%80%A0%E5%99%A8%E9%87%8D%E8%BD%BD/" title="002TS之方法重载构造器重载">002TS之方法重载构造器重载</a><time datetime="2021-12-19T15:34:00.000Z" title="发表于 2021-12-19 23:34:00">2021-12-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/13/001TS%E4%B9%8B%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD/" title="001TS之函数重载"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="001TS之函数重载"/></a><div class="content"><a class="title" href="/2021/12/13/001TS%E4%B9%8B%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD/" title="001TS之函数重载">001TS之函数重载</a><time datetime="2021-12-13T15:14:11.000Z" title="发表于 2021-12-13 23:14:11">2021-12-13</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 梁朝伟</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
